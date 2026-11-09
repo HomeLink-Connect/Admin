@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#111111">
+<title>ArnDrive Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+:root{--bg:#121315;--panel:#1b1c1f;--card:#222328;--line:#2f3138;--tx:#f4f5f7;--mut:#9a9ca5;--acc:#c1f11d;--accT:#111;--ok:#2ecc71;--wn:#f5a623;--bd:#ff6b6b;--bl:#38a1ff;--sh:0 8px 30px #0006}
+@media (prefers-color-scheme:light){:root{--bg:#f3f4f6;--panel:#fff;--card:#f5f6f8;--line:#e3e5ea;--tx:#16181d;--mut:#6b7280;--accT:#111;--bd:#d93025;--sh:0 8px 30px #0002}}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+button,input,select{font-family:inherit;color:inherit}
+.ico{flex:none;vertical-align:middle}
+.logo{font-weight:800;letter-spacing:-1px;font-size:22px}.logo span{background:#111;color:var(--acc);padding:0 7px;border-radius:8px;margin-left:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--acc);color:var(--accT);border:0;border-radius:12px;padding:11px 16px;font:800 14px Inter,sans-serif;cursor:pointer}
+.btn:active{opacity:.85}.btn.d{background:var(--card);color:var(--tx);border:1px solid var(--line)}.btn.r{background:var(--bd);color:#fff}.btn.s{padding:7px 11px;font-size:12.5px;border-radius:9px}.btn:disabled{opacity:.5}
+.in{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font:600 14px Inter,sans-serif;outline:0;width:100%}
+.in:focus{border-color:var(--acc)}
+.mm{color:var(--mut)}
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(900px 500px at 20% 0,#2a3a07 0,transparent 60%),var(--bg)}
+.lbox{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:12px}
+.lbox h2{font-size:22px;margin-top:6px}
+.gb{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:0;border-radius:12px;padding:12px;font:700 14px Inter,sans-serif;cursor:pointer}
+.err{color:var(--bd);font-weight:600;font-size:13px;min-height:16px}
+/* layout */
+#app{display:flex;min-height:100vh}
+#side{width:240px;background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;flex:none}
+#side .logo{padding:4px 10px 16px}
+.nv{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;color:var(--mut);position:relative}
+.nv:hover{background:var(--card);color:var(--tx)}.nv.on{background:var(--card);color:var(--tx)}.nv.on .ico{color:var(--acc)}
+.bdg{margin-left:auto;background:var(--wn);color:#111;border-radius:99px;font-size:11px;font-weight:800;padding:2px 8px}
+.me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--line);font-size:13px}
+.me b{display:block}.me small{color:var(--mut)}
+#main{flex:1;min-width:0;padding:26px 28px 60px;max-width:1300px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}.top h1{font-size:26px;letter-spacing:-.5px;flex:1}
+#mbar{display:none}
+@media (max-width:860px){#app{display:block}#side{position:fixed;left:-260px;top:0;z-index:50;transition:.2s;box-shadow:var(--sh)}#side.open{left:0}#mbar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}#mbar button{background:none;border:0;display:flex}#main{padding:18px 14px 60px}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.stat .t{display:flex;align-items:center;gap:8px;color:var(--mut);font-weight:700;font-size:12.5px}
+.stat b{font-size:28px;letter-spacing:-1px}.stat small{color:var(--mut);font-weight:600;font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.panel h3{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tb{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;color:var(--mut)}.tb.on{background:var(--acc);color:var(--accT);border-color:var(--acc)}
+.tw{overflow:auto;border-radius:14px;border:1px solid var(--line);background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:680px}
+th{text-align:left;color:var(--mut);font-weight:700;font-size:12px;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--panel);position:sticky;top:0}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}tbody tr.cl{cursor:pointer}tbody tr.cl:hover{background:var(--card)}
+.u{display:flex;align-items:center;gap:10px;min-width:0}.u b{display:block;font-weight:700}.u small{color:var(--mut)}
+.av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--card);display:inline-flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.av.l{width:84px;height:84px;font-size:32px}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:4px 10px;font-weight:800;font-size:11.5px;background:var(--card);white-space:nowrap}
+.chip.ok{background:#2ecc7126;color:var(--ok)}.chip.wn{background:#f5a62326;color:var(--wn)}.chip.bd{background:#ff6b6b26;color:var(--bd)}.chip.bl{background:#38a1ff26;color:var(--bl)}
+.tool{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.tool .in{max-width:340px}
+.empty{text-align:center;color:var(--mut);padding:50px 10px;font-weight:600}
+/* modal */
+#md{position:fixed;inset:0;background:#000b;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+#mp{background:var(--panel);border:1px solid var(--line);border-radius:22px;width:100%;max-width:640px;max-height:92vh;overflow:auto;padding:22px;box-shadow:var(--sh)}
+#mp h2{font-size:20px;margin-bottom:4px}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:14px;margin:12px 0}.kv span{color:var(--mut);font-weight:600}.kv b{font-weight:700;word-break:break-word}
+.docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:12px 0}
+.docs figure{margin:0;background:var(--card);border-radius:12px;overflow:hidden;cursor:zoom-in}.docs img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}.docs figcaption{padding:7px 10px;font-size:12px;font-weight:700;color:var(--mut)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lb{position:fixed;inset:0;background:#000e;z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:10px}#lb img{max-width:100%;max-height:100%;border-radius:10px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:12px 18px;border-radius:99px;font-weight:700;font-size:14px;z-index:300;box-shadow:var(--sh)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:150px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%}.bars i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:var(--acc);min-height:2px}.bars span{font-size:10.5px;color:var(--mut);font-weight:700}.bars em{font-size:10.5px;font-style:normal;font-weight:800}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:16px}@media (max-width:980px){.two{grid-template-columns:1fr}}
+</style></head><body>
+<div id="toast" hidden></div>
+<div id="lb" hidden onclick="this.hidden=true"><img alt=""></div>
+<div id="md" hidden onclick="if(event.target===this)closeM()"><div id="mp"></div></div>
+
+<div id="login">
+ <div class="lbox">
+  <div class="logo">Arn<span>Drive</span> <small class="mm" style="font-size:13px;font-weight:700">Admin</small></div>
+  <h2>Sign in</h2>
+  <p class="mm" style="font-size:13.5px;margin-top:-6px">Only accounts marked as admin can open this dashboard.</p>
+  <input class="in" id="em" type="email" placeholder="Admin email" autocomplete="email">
+  <input class="in" id="pw" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()">
+  <div class="err" id="err"></div>
+  <button class="btn" onclick="signIn()">Sign in</button>
+  <button class="gb" onclick="gSign()"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
+ </div>
+</div>
+
+<div id="app" hidden>
+ <div id="mbar"><button onclick="$('#side').classList.toggle('open')" id="mb"></button><span class="logo">Arn<span>Drive</span></span></div>
+ <nav id="side">
+  <div class="logo">Arn<span>Drive</span></div>
+  <div class="nv" data-p="overview" onclick="go('overview')"></div>
+  <div class="nv" data-p="reviews" onclick="go('reviews')"></div>
+  <div class="nv" data-p="users" onclick="go('users')"></div>
+  <div class="nv" data-p="rides" onclick="go('rides')"></div>
+  <div class="me"><span class="av" id="meav"></span><div style="min-width:0"><b id="mename"></b><small>Administrator</small></div></div>
+  <button class="btn d s" style="margin-top:6px" onclick="auth.signOut()">Sign out</button>
+ </nav>
+ <main id="main"></main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCxHHRKO6D_-qVK1oqEQCKSCXkoAEuvJO4",
+  authDomain: "arndrive-423b1.firebaseapp.com",
+  databaseURL: "https://arndrive-423b1-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "arndrive-423b1",
+  storageBucket: "arndrive-423b1.firebasestorage.app",
+  messagingSenderId: "594530032327",
+  appId: "1:594530032327:web:2073fe4286a9ff6728bce2"
+});
+const auth=firebase.auth(),db=firebase.firestore(),TS=()=>firebase.firestore.FieldValue.serverTimestamp();
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const money=n=>'$'+(+n||0).toFixed(2);
+const ICO={grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>',
+shield:'<path d="M12 3l8 3v6c0 4.6-3.2 8-8 9.5C7.2 20 4 16.6 4 12V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.6 3-6 7-6s7 2.4 7 6"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14.5c2.4.6 4 2.4 4 5.5"/>',
+car:'<path d="M3 15v-3.5L5.2 7A2 2 0 017 6h10a2 2 0 011.8 1l2.2 4.5V15"/><rect x="2.5" y="15" width="19" height="3.5" rx="1.5"/><circle cx="7" cy="12.2" r=".9"/><circle cx="17" cy="12.2" r=".9"/><path d="M5 18.5V20M19 18.5V20"/>',
+menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M16 14.5h2"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',refresh:'<path d="M20 11a8 8 0 00-14-4L4 9M4 4v5h5M4 13a8 8 0 0014 4l2-2M20 20v-5h-5"/>',download:'<path d="M12 4v11M7.5 11l4.5 4.5 4.5-4.5M5 20h14"/>',
+zap:'<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"/>',id:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.5-1.8 1.7-2.6 3-2.6s2.5.8 3 2.6M14 10h4M14 13.5h3"/>',ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>'};
+const ic=(n,s)=>`<svg class="ico" viewBox="0 0 24 24" width="${s||20}" height="${s||20}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICO[n]||''}</svg>`;
+const NAV={overview:['grid','Overview'],reviews:['shield','Driver reviews'],users:['users','Users'],rides:['car','Rides']};
+document.querySelectorAll('.nv').forEach(n=>{const k=n.dataset.p;n.innerHTML=ic(NAV[k][0])+'<span>'+NAV[k][1]+'</span>'+(k==='reviews'?'<span class="bdg" id="pbadge" hidden>0</span>':'')});
+$('#mb').innerHTML=ic('menu',24);
+function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,3200)}
+const closeM=()=>{$('#md').hidden=true};
+const openM=h=>{$('#mp').innerHTML=h;$('#md').hidden=false};
+const zoom=src=>{const l=$('#lb');l.querySelector('img').src=src;l.hidden=false};
+
+/* ---------- auth ---------- */
+let ME=null;
+const AERR=c=>({'auth/invalid-credential':'Wrong email or password.','auth/invalid-email':'Enter a valid email.','auth/too-many-requests':'Too many attempts. Try again later.','auth/unauthorized-domain':'Add this website in Firebase > Authentication > Settings > Authorized domains.','auth/operation-not-allowed':'Turn on this sign-in method in Firebase.'})[c];
+async function signIn(){$('#err').textContent='';try{await auth.signInWithEmailAndPassword($('#em').value.trim(),$('#pw').value)}catch(e){$('#err').textContent=AERR(e.code)||String(e.message).replace('Firebase: ','')}}
+async function gSign(){$('#err').textContent='';try{const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});await auth.signInWithPopup(p)}catch(e){if(e.code!=='auth/popup-closed-by-user')$('#err').textContent=AERR(e.code)||String(e.message).replace('Firebase: ','')}}
+let unsubP=null;
+auth.onAuthStateChanged(async u=>{
+ if(unsubP){unsubP();unsubP=null}
+ if(!u){ME=null;$('#app').hidden=true;$('#login').hidden=false;return}
+ try{const s=await db.collection('users').doc(u.uid).get();const d=s.exists?s.data():null;
+  if(!d||d.admin!==true){$('#err').innerHTML='This account is not an admin.<br><span class="mm">Open Firebase &gt; Firestore &gt; users &gt; <b>'+esc(u.uid)+'</b> and add a field <b>admin</b> (boolean) = true, then sign in again.</span>';await auth.signOut();return}
+  ME={...d,uid:u.uid};$('#login').hidden=true;$('#app').hidden=false;$('#mename').textContent=d.name||u.email;$('#meav').innerHTML=avInner(d);
+  unsubP=db.collection('users').where('dstatus','==','pending').onSnapshot(s=>{const b=$('#pbadge');b.textContent=s.size;b.hidden=!s.size;PENDN=s.size});
+  await loadAll();go(location.hash.slice(1)||'overview')
+ }catch(e){$('#err').textContent='Could not verify admin access: '+String(e.message||e);await auth.signOut()}});
+const avInner=u=>u.photoS||u.photo?`<img class="av" style="width:100%;height:100%" src="${u.photoS||u.photo}">`:esc((u.name||'?')[0]).toUpperCase();
+const av=(u,c)=>(u.photoS||u.photo)?`<img class="av ${c||''}" src="${u.photoS||u.photo}" alt="">`:`<span class="av ${c||''}">${esc((u.name||'?')[0]).toUpperCase()}</span>`;
+
+/* ---------- data ---------- */
+let A={users:[],rides:[]},PENDN=0,CUR='overview';
+async function loadAll(){
+ const [u,r]=await Promise.all([db.collection('users').limit(2000).get(),db.collection('rides').orderBy('created','desc').limit(800).get()]);
+ A.users=u.docs.map(d=>({id:d.id,...d.data()}));A.rides=r.docs.map(d=>({id:d.id,...d.data()}));
+}
+const dst=u=>u.dstatus&&u.dstatus!=='none'?u.dstatus:(!u.dstatus&&u.car&&u.plate?'verified':'none');
+const T=r=>r.created&&r.created.seconds?r.created.seconds*1000:0;
+const fdt=ms=>ms?new Date(ms).toLocaleString('en-GB',{day:'numeric',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+const fd=ms=>ms?new Date(ms).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+const dchip=s=>({verified:'<span class="chip ok">Verified</span>',pending:'<span class="chip wn">Pending</span>',rejected:'<span class="chip bd">Rejected</span>',none:''})[s]||'';
+const schip=s=>({done:'<span class="chip ok">Completed</span>',cancelled:'<span class="chip bd">Cancelled</span>',open:'<span class="chip bl">Searching</span>',accepted:'<span class="chip wn">Driver assigned</span>',arrived:'<span class="chip wn">Arrived</span>',ongoing:'<span class="chip wn">On trip</span>'})[s]||esc(s);
+function ratingFor(uid,as){let n=0,sum=0;A.rides.forEach(r=>{if(r[as==='driver'?'driver':'pax']===uid){const v=as==='driver'?r.rating:r.paxRating;if(v>0){n++;sum+=v}}});return{n,avg:n?sum/n:0}}
+function go(p){CUR=p;location.hash=p;$('#side').classList.remove('open');document.querySelectorAll('.nv').forEach(n=>n.classList.toggle('on',n.dataset.p===p));({overview:vOverview,reviews:vReviews,users:vUsers,rides:vRides})[p]();window.scrollTo(0,0)}
+async function refresh(){toast('Refreshing…');await loadAll();go(CUR);toast('Updated')}
+const head=(t,extra)=>`<div class="top"><h1>${t}</h1>${extra||''}<button class="btn d s" onclick="refresh()">${ic('refresh',15)} Refresh</button></div>`;
+
+/* ---------- overview ---------- */
+function vOverview(){
+ const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+ const rs=A.rides,today=rs.filter(r=>T(r)>=t0),done=rs.filter(r=>r.status==='done'),doneT=today.filter(r=>r.status==='done');
+ const drivers=A.users.filter(u=>dst(u)==='verified'),active=rs.filter(r=>r.active===true&&r.status!=='done');
+ const cr=rs.filter(r=>r.status==='cancelled').length,rate=rs.length?Math.round(done.length/rs.length*100):0;
+ const days=[];for(let i=13;i>=0;i--){const s=t0-i*864e5,e=s+864e5;days.push({d:new Date(s),n:rs.filter(r=>T(r)>=s&&T(r)<e).length,k:rs.filter(r=>T(r)>=s&&T(r)<e&&r.status==='done').length})}
+ const mx=Math.max(1,...days.map(x=>x.n));
+ const st=(i,l,v,s)=>`<div class="stat"><div class="t">${ic(i,16)}${l}</div><b>${v}</b><small>${s||''}</small></div>`;
+ $('#main').innerHTML=head('Overview')+`<div class="grid">
+ ${st('users','Total users',A.users.length,A.users.filter(u=>T({created:u.created})>=t0).length+' joined today')}
+ ${st('shield','Verified drivers',drivers.length,PENDN+' waiting for review')}
+ ${st('zap','Active rides now',active.length,'Searching or in progress')}
+ ${st('car','Rides today',today.length,doneT.length+' completed')}
+ ${st('wallet','Cash volume today',money(doneT.reduce((n,r)=>n+(+r.price||0),0)),'All time '+money(done.reduce((n,r)=>n+(+r.price||0),0)))}
+ ${st('check','Completion rate',rate+'%',cr+' cancelled')}</div>
+ <div class="two"><div class="panel"><h3>${ic('car',17)} Rides in the last 14 days</h3><div class="bars">${days.map(x=>`<div title="${x.n} requested, ${x.k} completed"><em>${x.n||''}</em><i style="height:${Math.round(x.n/mx*100)}%"></i><span>${x.d.getDate()}</span></div>`).join('')}</div></div>
+ <div class="panel"><h3>${ic('shield',17)} Needs attention</h3>${PENDN?`<p style="margin-bottom:12px"><b>${PENDN}</b> driver${PENDN>1?'s are':' is'} waiting for approval.</p><button class="btn" onclick="go('reviews')">Review drivers</button>`:'<p class="mm">No drivers are waiting. You are all caught up.</p>'}
+ <p class="mm" style="margin-top:14px">${active.length} active ride${active.length===1?'':'s'} right now.</p>${active.length?`<button class="btn d s" style="margin-top:8px" onclick="go('rides')">View rides</button>`:''}</div></div>
+ <div class="panel"><h3>${ic('clock',17)} Recent rides</h3>${rideTable(rs.slice(0,8))}</div>`}
+
+/* ---------- driver reviews ---------- */
+let RV='pending';
+function vReviews(){
+ const list=A.users.filter(u=>RV==='all'?dst(u)!=='none':dst(u)===RV).sort((a,b)=>((b.dsubmitted&&b.dsubmitted.seconds)||0)-((a.dsubmitted&&a.dsubmitted.seconds)||0));
+ const c=k=>A.users.filter(u=>dst(u)===k).length;
+ $('#main').innerHTML=head('Driver reviews')+`<div class="tabs">${[['pending','Pending ('+c('pending')+')'],['verified','Verified ('+c('verified')+')'],['rejected','Rejected ('+c('rejected')+')'],['all','All drivers']].map(([k,l])=>`<div class="tb ${RV===k?'on':''}" onclick="RV='${k}';vReviews()">${l}</div>`).join('')}</div>
+ ${list.length?`<div class="tw"><table><thead><tr><th>Driver</th><th>Vehicle</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>${list.map(u=>`<tr class="cl" onclick="review('${u.id}')"><td><div class="u">${av(u)}<div><b>${esc(u.name)}</b><small>${esc(u.phone)}</small></div></div></td><td>${esc(u.car||'')} <span class="mm">${esc(u.plate||'')}</span></td><td>${fd(u.dsubmitted&&u.dsubmitted.seconds*1000)}</td><td>${dchip(dst(u))}</td><td><button class="btn s ${dst(u)==='pending'?'':'d'}">${dst(u)==='pending'?'Review':'View'}</button></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">${RV==='pending'?'No drivers are waiting for review.':'Nothing here yet.'}</div>`}`}
+async function review(uid){
+ openM('<p class="mm">Loading documents…</p>');
+ try{const u=A.users.find(x=>x.id===uid)||(await db.collection('users').doc(uid).get()).data();const ds=await db.collection('users').doc(uid).collection('docs').get();const D={};ds.forEach(x=>D[x.id]=x.data());const i=D.info||{};
+  const names={licFront:'Licence (front)',licBack:'Licence (back)',vehicle:'Vehicle',registration:'Registration book',insurance:'Insurance / disc',selfie:'Selfie'};
+  const exp=i.licExp&&i.licExp<new Date().toISOString().slice(0,10);const st=dst(u);
+  const imgs=[...(u.photo?[['Profile photo',u.photo]]:[]),...Object.keys(names).filter(k=>D[k]).map(k=>[names[k],D[k].img])];
+  openM(`<div class="row" style="margin-bottom:6px">${av(u,'l')}<div><h2>${esc(u.name)}</h2><div class="mm">${esc(u.phone)}</div><div style="margin-top:6px">${dchip(st)}</div></div></div>
+  <div class="kv"><span>Licence number</span><b>${esc(i.licNo||'')}</b><span>Licence expiry</span><b>${esc(i.licExp||'')} ${exp?'<span class="chip bd">Expired</span>':''}</b><span>Vehicle</span><b>${esc(((i.colour||'')+' '+(i.make||'')+' '+(i.model||'')+' '+(i.year||'')).trim()||u.car||'')}</b><span>Number plate</span><b>${esc(i.plate||u.plate||'')}</b>${u.dnote?`<span>Last note</span><b>${esc(u.dnote)}</b>`:''}</div>
+  <div class="docs">${imgs.length?imgs.map(([n,s])=>`<figure onclick="zoom(this.querySelector('img').src)"><img src="${s}" alt=""><figcaption>${n}</figcaption></figure>`).join(''):'<p class="mm">No documents uploaded.</p>'}</div>
+  <input class="in" id="rjn" placeholder="Reason (required to reject, shown to the driver)" style="margin:6px 0 12px">
+  <div class="row"><button class="btn" onclick="decide('${uid}',true)">${ic('check',16)} Approve</button><button class="btn r" onclick="decide('${uid}',false)">${ic('x',16)} Reject</button>${st==='verified'?`<button class="btn d" onclick="revoke('${uid}')">${ic('ban',16)} Revoke driver access</button>`:''}<button class="btn d" onclick="closeM()" style="margin-left:auto">Close</button></div>`)
+ }catch(e){openM('<p class="mm">Could not load documents. Check your Firestore rules.</p><button class="btn d" onclick="closeM()">Close</button>')}}
+async function setU(uid,patch,msg){try{await db.collection('users').doc(uid).update(patch);const u=A.users.find(x=>x.id===uid);if(u)Object.assign(u,patch);closeM();toast(msg);go(CUR);const s=await db.collection('users').doc(uid).get()}catch(e){toast('Failed: '+String(e.message||e).replace('Firebase: ',''))}}
+async function decide(uid,ok){const note=($('#rjn')||{}).value;if(!ok&&!(note&&note.trim()))return toast('Add a reason so the driver knows what to fix.');
+ await setU(uid,ok?{dstatus:'verified',dnote:'',dreviewed:TS()}:{dstatus:'rejected',dnote:note.trim(),dreviewed:TS(),role:'passenger'},ok?'Driver approved':'Driver rejected')}
+async function revoke(uid){if(!confirm('Remove this driver\'s access? They can resubmit documents.'))return;await setU(uid,{dstatus:'rejected',dnote:'Your driver access was removed. Please contact support.',role:'passenger',dreviewed:TS()},'Driver access removed')}
+
+/* ---------- users ---------- */
+let UQ='',UF='all';
+function vUsers(){
+ const q=UQ.toLowerCase();
+ const list=A.users.filter(u=>(UF==='all'||(UF==='drivers'&&dst(u)==='verified')||(UF==='susp'&&u.suspended)||(UF==='admin'&&u.admin))&&(!q||[u.name,u.phone,u.car,u.plate,u.id].join(' ').toLowerCase().includes(q))).sort((a,b)=>((b.created&&b.created.seconds)||0)-((a.created&&a.created.seconds)||0));
+ $('#main').innerHTML=head('Users',`<span class="mm" style="font-weight:700">${A.users.length} total</span>`)+`<div class="tool"><input class="in" id="uq" placeholder="Search name, phone, plate…" value="${esc(UQ)}" oninput="UQ=this.value;clearTimeout(vUsers.t);vUsers.t=setTimeout(()=>{vUsers();const e=$('#uq');e.focus();e.setSelectionRange(9999,9999)},250)"></div>
+ <div class="tabs">${[['all','All'],['drivers','Drivers'],['susp','Suspended'],['admin','Admins']].map(([k,l])=>`<div class="tb ${UF===k?'on':''}" onclick="UF='${k}';vUsers()">${l}</div>`).join('')}</div>
+ ${list.length?`<div class="tw"><table><thead><tr><th>User</th><th>Role</th><th>Driver</th><th>Rating</th><th>Trips</th><th>Joined</th></tr></thead><tbody>${list.slice(0,300).map(u=>{const rp=ratingFor(u.id,'pax'),rd=ratingFor(u.id,'driver'),tr=A.rides.filter(r=>(r.pax===u.id||r.driver===u.id)&&r.status==='done').length;
+ return`<tr class="cl" onclick="userM('${u.id}')"><td><div class="u">${av(u)}<div><b>${esc(u.name)} ${u.admin?'<span class="chip bl">Admin</span>':''} ${u.suspended?'<span class="chip bd">Suspended</span>':''}</b><small>${esc(u.phone)}</small></div></div></td><td>${u.role==='driver'?'Driver mode':'Passenger'}</td><td>${dchip(dst(u))||'<span class="mm">–</span>'}</td><td>${(rd.n?rd:rp).n?(rd.n?rd:rp).avg.toFixed(2)+' <span class="mm">('+(rd.n?rd:rp).n+')</span>':'<span class="mm">–</span>'}</td><td>${tr}</td><td>${fd(u.created&&u.created.seconds*1000)}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">No users match.</div>'}`}
+function userM(uid){
+ const u=A.users.find(x=>x.id===uid);if(!u)return;const rp=ratingFor(uid,'pax'),rd=ratingFor(uid,'driver');
+ const mine=A.rides.filter(r=>r.pax===uid||r.driver===uid);const done=mine.filter(r=>r.status==='done'),earn=A.rides.filter(r=>r.driver===uid&&r.status==='done').reduce((n,r)=>n+(+r.price||0),0);
+ openM(`<div class="row" style="margin-bottom:6px">${av(u,'l')}<div><h2>${esc(u.name)}</h2><div class="mm">${esc(u.phone)}</div><div style="margin-top:6px">${dchip(dst(u))} ${u.suspended?'<span class="chip bd">Suspended</span>':''} ${u.admin?'<span class="chip bl">Admin</span>':''}</div></div></div>
+ <div class="kv"><span>User ID</span><b style="font-size:12px">${esc(uid)}</b><span>Joined</span><b>${fd(u.created&&u.created.seconds*1000)}</b><span>Mode</span><b>${u.role==='driver'?'Driver':'Passenger'}</b>${u.car?`<span>Vehicle</span><b>${esc(u.car)} · ${esc(u.plate||'')}</b>`:''}<span>Passenger rating</span><b>${rp.n?rp.avg.toFixed(2)+' ('+rp.n+')':'No ratings'}</b><span>Driver rating</span><b>${rd.n?rd.avg.toFixed(2)+' ('+rd.n+')':'No ratings'}</b><span>Completed trips</span><b>${done.length}</b>${rd.n||dst(u)==='verified'?`<span>Driver earnings</span><b>${money(earn)}</b>`:''}</div>
+ <div class="row">${dst(u)!=='none'?`<button class="btn d" onclick="closeM();review('${uid}')">${ic('id',16)} Documents</button>`:''}
+ ${uid===ME.uid?'':u.suspended?`<button class="btn" onclick="setU('${uid}',{suspended:false},'Account restored')">Restore account</button>`:`<button class="btn r" onclick="suspend('${uid}')">${ic('ban',16)} Suspend</button>`}
+ <button class="btn d" onclick="closeM()" style="margin-left:auto">Close</button></div>
+ <p class="mm" style="margin-top:12px;font-size:12.5px">A suspended user is signed out and cannot use the app until restored.</p>`)}
+function suspend(uid){if(confirm('Suspend this account? They will be signed out and blocked.'))setU(uid,{suspended:true,role:'passenger'},'Account suspended')}
+
+/* ---------- rides ---------- */
+let RF='all',RQ='';
+function rideTable(list){return list.length?`<div class="tw" style="border:0"><table><thead><tr><th>Date</th><th>Passenger</th><th>Driver</th><th>Route</th><th>Fare</th><th>Status</th></tr></thead><tbody>${list.map(r=>`<tr class="cl" onclick="rideM('${r.id}')"><td>${fdt(T(r))}</td><td><div class="u">${av({name:r.paxName,photoS:r.paxPhoto})}<b>${esc(r.paxName)}</b></div></td><td>${r.driverName?`<div class="u">${av({name:r.driverName,photoS:r.driverPhoto})}<b>${esc(r.driverName)}</b></div>`:'<span class="mm">–</span>'}</td><td style="max-width:260px"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.pickup&&r.pickup.name)} → ${esc(r.drop&&r.drop.name)}</div><small class="mm">${r.km||''} km</small></td><td><b>${money(r.price)}</b></td><td>${schip(r.status)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No rides.</div>'}
+function vRides(){
+ const q=RQ.toLowerCase(),list=A.rides.filter(r=>(RF==='all'||(RF==='active'?(r.active===true&&r.status!=='done'):r.status===RF))&&(!q||[r.paxName,r.driverName,r.driverPlate,r.pickup&&r.pickup.name,r.drop&&r.drop.name].join(' ').toLowerCase().includes(q)));
+ $('#main').innerHTML=head('Rides',`<button class="btn d s" onclick="csv()">${ic('download',15)} Export CSV</button>`)+`<div class="tool"><input class="in" id="rq" placeholder="Search passenger, driver, plate, place…" value="${esc(RQ)}" oninput="RQ=this.value;clearTimeout(vRides.t);vRides.t=setTimeout(()=>{vRides();const e=$('#rq');e.focus();e.setSelectionRange(9999,9999)},250)"></div>
+ <div class="tabs">${[['all','All'],['active','Active now'],['done','Completed'],['cancelled','Cancelled'],['open','Searching']].map(([k,l])=>`<div class="tb ${RF===k?'on':''}" onclick="RF='${k}';vRides()">${l}</div>`).join('')}</div>${rideTable(list.slice(0,300))}<p class="mm" style="margin-top:10px">Showing the latest ${Math.min(list.length,300)} of ${list.length} matching rides (most recent 800 loaded).</p>`}
+function rideM(id){
+ const r=A.rides.find(x=>x.id===id);if(!r)return;const live=r.active===true&&r.status!=='done'&&r.status!=='cancelled';
+ openM(`<h2>Ride</h2><div style="margin:6px 0 4px">${schip(r.status)}</div>
+ <div class="kv"><span>Requested</span><b>${fdt(T(r))}</b><span>From</span><b>${esc(r.pickup&&r.pickup.name)}</b><span>To</span><b>${esc(r.drop&&r.drop.name)}</b><span>Distance</span><b>${r.km||'?'} km</b><span>Fare</span><b>${money(r.price)} cash</b><span>Type</span><b>${r.type==='c2c'?'City to city':'Ride'}</b><span>Passenger</span><b>${esc(r.paxName)} · ${esc(r.paxPhone||'')}</b><span>Driver</span><b>${r.driverName?esc(r.driverName)+' · '+esc(r.driverPhone||'')+'<br>'+esc(r.driverCar||'')+' '+esc(r.driverPlate||''):'None'}</b>${r.rating>0?`<span>Passenger rated</span><b>${r.rating} / 5 ${r.ratingNote?'– '+esc(r.ratingNote):''}</b>`:''}${r.paxRating>0&&r.status==='done'?`<span>Driver rated</span><b>${r.paxRating} / 5 ${r.paxNote?'– '+esc(r.paxNote):''}</b>`:''}${r.reason?`<span>Cancel reason</span><b>${esc(r.reason)}${r.cancelledBy?' ('+esc(r.cancelledBy)+')':''}</b>`:''}${r.note?`<span>Passenger note</span><b>${esc(r.note)}</b>`:''}<span>Ride ID</span><b style="font-size:12px">${esc(id)}</b></div>
+ <div class="row">${live?`<button class="btn r" onclick="cancelRide('${id}')">${ic('x',16)} Cancel this ride</button>`:''}<a class="btn d" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin=${r.pickup&&r.pickup.lat},${r.pickup&&r.pickup.lng}&destination=${r.drop&&r.drop.lat},${r.drop&&r.drop.lng}">Open in Google Maps</a><button class="btn d" onclick="closeM()" style="margin-left:auto">Close</button></div>`)}
+async function cancelRide(id){if(!confirm('Cancel this ride for both passenger and driver?'))return;
+ try{await db.collection('rides').doc(id).update({status:'cancelled',active:false,cancelledBy:'admin',reason:'Cancelled by ArnDrive support'});const r=A.rides.find(x=>x.id===id);Object.assign(r,{status:'cancelled',active:false,cancelledBy:'admin'});closeM();toast('Ride cancelled');go(CUR)}catch(e){toast('Failed. Make sure the updated Firestore rules are published.')}}
+function csv(){const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';const rows=[['Date','Passenger','Passenger phone','Driver','Driver phone','Plate','From','To','Km','Fare','Status','Passenger rating','Driver rating']];
+ A.rides.forEach(r=>rows.push([fdt(T(r)),r.paxName,r.paxPhone,r.driverName,r.driverPhone,r.driverPlate,r.pickup&&r.pickup.name,r.drop&&r.drop.name,r.km,r.price,r.status,r.rating,r.paxRating]));
+ const b=new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='arndrive-rides.csv';document.body.appendChild(a);a.click();a.remove()}
+</script>
+</body></html>
